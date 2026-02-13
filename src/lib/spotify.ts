@@ -20,7 +20,7 @@ export async function fetchPlaylistTracks(
   accessToken: string
 ): Promise<SpotifyTrack[]> {
   const tracks: SpotifyTrack[] = [];
-  let url: string | null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50&market=from_token`;
+  let url: string | null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`;
 
   while (url) {
     const fetchUrl: string = url;

@@ -13,7 +13,7 @@ export async function GET(
 
   try {
     const tracks: unknown[] = [];
-    let url: string | null = `https://api.spotify.com/v1/playlists/${id}/tracks?limit=50&market=from_token`;
+    let url: string | null = `https://api.spotify.com/v1/playlists/${id}/tracks?limit=50`;
 
     while (url) {
       const fetchUrl: string = url;
