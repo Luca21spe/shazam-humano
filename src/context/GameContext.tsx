@@ -166,17 +166,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
 
-    case 'SKIP_SONG': {
-      // Skip current song entirely — 0 points, move to next turn
-      return {
-        ...state,
-        currentTrack: null,
-        currentGuess: null,
-        currentRoundResult: null,
-        currentTeamIndex: (state.currentTeamIndex === 0 ? 1 : 0) as 0 | 1,
-      };
-    }
-
     case 'NEXT_TURN': {
       const currentTeam = state.teams[state.currentTeamIndex];
       if (currentTeam.score >= state.targetScore) {
