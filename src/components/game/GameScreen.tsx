@@ -21,7 +21,7 @@ export default function GameScreen() {
   const router = useRouter();
   const { state, dispatch } = useGame();
   const { accessToken } = useSpotifyToken();
-  const { playTrack, pause, isReady } = useSpotifyPlayer(accessToken);
+  const { playTrack, pause, isReady, isSearchingDevice, noDeviceFound, deviceName, retryDeviceSearch } = useSpotifyPlayer(accessToken);
   const hasStartedRef = useRef(false);
   const roundStartedRef = useRef(false);
 
@@ -130,11 +130,51 @@ export default function GameScreen() {
   if (!isReady && state.phase === 'setup' && state.trackPool.length > 0) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
-          <p className="text-text-secondary">
-            Conectando con Spotify...
-          </p>
+        <div className="text-center space-y-4 max-w-md px-4">
+          {isSearchingDevice && (
+            <>
+              <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
+              <p className="text-text-secondary">
+                Buscando dispositivo de Spotify...
+              </p>
+              <p className="text-text-secondary text-sm opacity-70">
+                Asegurate de tener Spotify abierto en tu computadora, celular o navegador
+              </p>
+            </>
+          )}
+          {noDeviceFound && (
+            <>
+              <div className="text-4xl mb-2">🎵</div>
+              <p className="text-text-primary font-semibold text-lg">
+                No se encontró ningún dispositivo de Spotify
+              </p>
+              <p className="text-text-secondary text-sm">
+                Para jugar, necesitás tener Spotify abierto en algún dispositivo:
+              </p>
+              <ul className="text-text-secondary text-sm text-left space-y-2 mt-2">
+                <li>🖥️ App de escritorio de Spotify</li>
+                <li>📱 App de Spotify en el celular</li>
+                <li>🌐 <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">Spotify Web Player</a></li>
+              </ul>
+              <p className="text-text-secondary text-xs mt-2 opacity-70">
+                Abrí Spotify, reproducí una canción cualquiera y después hacé click en reintentar.
+              </p>
+              <button
+                onClick={retryDeviceSearch}
+                className="mt-4 px-6 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+              >
+                🔄 Reintentar
+              </button>
+            </>
+          )}
+          {!isSearchingDevice && !noDeviceFound && (
+            <>
+              <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
+              <p className="text-text-secondary">
+                Conectando con Spotify...
+              </p>
+            </>
+          )}
         </div>
       </div>
     );
@@ -158,6 +198,11 @@ export default function GameScreen() {
             <span className="text-primary">Shazam</span>{' '}
             <span className="text-secondary">Humano</span>
           </h1>
+          {deviceName && (
+            <p className="text-xs text-text-secondary mt-1 opacity-60">
+              🔊 {deviceName}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
