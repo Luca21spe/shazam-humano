@@ -64,7 +64,7 @@ export async function fetchPlaylistTracks(
   }
 
   // Handle all possible response formats from Spotify API
-  let firstPageItems: SpotifyTrackItem[] = [];
+  let firstPageItems: any[] = [];
   let nextUrl: string | null = null;
 
   if (playlist.tracks?.items && Array.isArray(playlist.tracks.items)) {
