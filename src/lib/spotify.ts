@@ -106,8 +106,12 @@ export async function fetchPlaylistTracks(
   }
 
   console.log('First page items count:', firstPageItems.length);
+  if (firstPageItems.length > 0) {
+    console.log('First item structure:', JSON.stringify(firstPageItems[0]).substring(0, 500));
+  }
 
   tracks.push(...processItems(firstPageItems));
+  console.log('Processed tracks count:', tracks.length);
 
   // Fetch remaining pages if any
   let url: string | null = nextUrl;
