@@ -112,6 +112,17 @@ export default function GameScreen() {
     dispatch({ type: 'SKIP_TIMELINE' });
   }, [dispatch]);
 
+  const handleSkipSong = useCallback(() => {
+    listeningTimer.stop();
+    guessingTimer.stop();
+    pause();
+    dispatch({ type: 'SKIP_SONG' });
+    // Start next round after switching teams
+    setTimeout(() => {
+      dispatch({ type: 'START_ROUND' });
+    }, 100);
+  }, [dispatch, pause, listeningTimer, guessingTimer]);
+
   const handleNextTurn = useCallback(() => {
     dispatch({ type: 'NEXT_TURN' });
     // After next turn sets up, start the round
@@ -226,6 +237,12 @@ export default function GameScreen() {
                   totalTime={state.guessTimeSec}
                   label="Tiempo de escucha"
                 />
+                <button
+                  onClick={handleSkipSong}
+                  className="mt-2 px-4 py-2 text-sm text-text-secondary hover:text-accent border border-surface-light hover:border-accent rounded-lg transition-colors"
+                >
+                  ⏭ Saltar canción
+                </button>
               </div>
             )}
 
@@ -243,6 +260,14 @@ export default function GameScreen() {
                   />
                 </div>
                 <GuessForm onSubmit={handleGuessSubmit} />
+                <div className="text-center">
+                  <button
+                    onClick={handleSkipSong}
+                    className="px-4 py-2 text-sm text-text-secondary hover:text-accent border border-surface-light hover:border-accent rounded-lg transition-colors"
+                  >
+                    ⏭ Saltar canción
+                  </button>
+                </div>
               </div>
             )}
 

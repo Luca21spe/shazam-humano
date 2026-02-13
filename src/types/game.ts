@@ -90,5 +90,6 @@ export type GameAction =
   | { type: 'SUBMIT_GUESS'; payload: RoundGuess }
   | { type: 'PLACE_IN_TIMELINE'; payload: { position: number } }
   | { type: 'SKIP_TIMELINE' }
+  | { type: 'SKIP_SONG' }
   | { type: 'NEXT_TURN' }
   | { type: 'RESET_GAME' };
