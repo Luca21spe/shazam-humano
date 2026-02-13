@@ -11,8 +11,9 @@ export async function GET(request: NextRequest) {
     'playlist-read-collaborative',
   ].join(' ');
 
-  const origin = request.nextUrl.origin;
-  const redirectUri = `${origin}/api/spotify/callback`;
+  const redirectUri = process.env.SPOTIFY_REDIRECT_URI!;
+
+  console.log('Auth redirect URI:', redirectUri);
 
   const params = new URLSearchParams({
     response_type: 'code',

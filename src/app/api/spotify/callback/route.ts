@@ -8,6 +8,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/?error=auth_failed', request.url));
   }
 
+  const redirectUri = process.env.SPOTIFY_REDIRECT_URI!;
+
   const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: {
@@ -19,13 +21,17 @@ export async function GET(request: NextRequest) {
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: `${request.nextUrl.origin}/api/spotify/callback`,
+      redirect_uri: redirectUri,
     }),
   });
 
   const data = await tokenResponse.json();
 
+  console.log('Token response status:', tokenResponse.status);
+  console.log('Token scopes:', data.scope);
+
   if (!tokenResponse.ok) {
+    console.error('Token exchange failed:', JSON.stringify(data));
     return NextResponse.redirect(new URL('/?error=token_failed', request.url));
   }
 
