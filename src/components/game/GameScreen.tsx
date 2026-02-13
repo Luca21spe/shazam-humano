@@ -77,14 +77,21 @@ export default function GameScreen() {
     if (state.phase !== 'listening') {
       roundStartedRef.current = false;
     }
-  }, [state.phase, state.currentTrack, playTrack, listeningTimer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase, state.currentTrack]);
 
   // Start guessing timer when entering guessing phase
+  const guessingStartedRef = useRef(false);
   useEffect(() => {
-    if (state.phase === 'guessing') {
+    if (state.phase === 'guessing' && !guessingStartedRef.current) {
+      guessingStartedRef.current = true;
       guessingTimer.start();
     }
-  }, [state.phase, guessingTimer]);
+    if (state.phase !== 'guessing') {
+      guessingStartedRef.current = false;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.phase]);
 
   // Auto-place in timeline if timeline is empty (first song)
   useEffect(() => {

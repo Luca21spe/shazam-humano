@@ -1,7 +1,7 @@
 import { stringSimilarity } from 'string-similarity-js';
 import type { RoundGuess, RoundResult, SpotifyTrack } from '@/types/game';
 
-const SIMILARITY_THRESHOLD = 0.6;
+const SIMILARITY_THRESHOLD = 0.5;
 
 function normalize(input: string): string {
   return input
