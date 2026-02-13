@@ -64,17 +64,48 @@ export async function fetchPlaylistTracks(
 
   const playlist = await playlistRes.json();
 
-  // Log the structure to understand the response format
-  console.log('Playlist tracks type:', typeof playlist.tracks, playlist.tracks ? 'exists' : 'missing');
-  console.log('Playlist items type:', typeof playlist.items, Array.isArray(playlist.items) ? `array(${playlist.items.length})` : 'not array');
-  if (playlist.items && playlist.items.length > 0) {
-    console.log('First item keys:', Object.keys(playlist.items[0]));
-    console.log('First item sample:', JSON.stringify(playlist.items[0]).substring(0, 500));
+  // Log full response structure for debugging
+  console.log('Full playlist keys:', Object.keys(playlist));
+  if (playlist.items) {
+    console.log('Items type:', typeof playlist.items, 'isArray:', Array.isArray(playlist.items));
+    if (typeof playlist.items === 'object' && !Array.isArray(playlist.items)) {
+      console.log('Items object keys:', Object.keys(playlist.items));
+    }
   }
 
-  // Handle both formats: tracks in playlist.tracks.items or playlist.items
-  const firstPageItems = playlist.tracks?.items || (Array.isArray(playlist.items) ? playlist.items : []);
-  const nextUrl = playlist.tracks?.next || playlist.next || null;
+  // Handle all possible response formats from Spotify API
+  let firstPageItems: SpotifyTrackItem[] = [];
+  let nextUrl: string | null = null;
+
+  if (playlist.tracks?.items && Array.isArray(playlist.tracks.items)) {
+    // Standard format: playlist.tracks.items[]
+    firstPageItems = playlist.tracks.items;
+    nextUrl = playlist.tracks.next || null;
+  } else if (Array.isArray(playlist.items)) {
+    // Alt format: playlist.items[]
+    firstPageItems = playlist.items;
+    nextUrl = playlist.next || null;
+  } else if (playlist.items?.items && Array.isArray(playlist.items.items)) {
+    // Nested format: playlist.items.items[]
+    firstPageItems = playlist.items.items;
+    nextUrl = playlist.items.next || null;
+  } else if (playlist.items && typeof playlist.items === 'object') {
+    // items is a paginated object - try to get href and fetch tracks separately
+    const tracksHref = playlist.items.href || playlist.href;
+    if (tracksHref) {
+      console.log('Fetching tracks from href:', tracksHref);
+      const tracksRes = await fetch(tracksHref, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (tracksRes.ok) {
+        const tracksData = await tracksRes.json();
+        firstPageItems = tracksData.items || [];
+        nextUrl = tracksData.next || null;
+      }
+    }
+  }
+
+  console.log('First page items count:', firstPageItems.length);
 
   tracks.push(...processItems(firstPageItems));
 
