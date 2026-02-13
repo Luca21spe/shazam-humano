@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     body: new URLSearchParams({
       grant_type: 'authorization_code',
       code,
-      redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
+      redirect_uri: `${request.nextUrl.origin}/api/spotify/callback`,
     }),
   });
 
