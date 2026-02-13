@@ -1,41 +1,31 @@
 import type { SpotifyTrack } from '@/types/game';
 
-interface SpotifyTrackItem {
-  track: {
-    id: string;
-    uri: string;
-    name: string;
-    artists: { name: string }[];
-    album: {
-      name: string;
-      images: { url: string; height: number; width: number }[];
-      release_date: string;
-    };
-    is_playable?: boolean;
-  } | null;
-}
-
-function processItems(items: SpotifyTrackItem[]): SpotifyTrack[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function processItems(items: any[]): SpotifyTrack[] {
   const tracks: SpotifyTrack[] = [];
   for (const item of items) {
-    if (!item.track) continue;
-    if (item.track.is_playable === false) continue;
+    // Support both formats: { track: { ... } } and { item: { ... } }
+    const trackData = item.track || item.item;
+    if (!trackData) continue;
+    if (trackData.is_playable === false) continue;
+    if (trackData.type !== 'track') continue;
+    if (!trackData.album) continue;
 
     const albumArt =
-      item.track.album.images.find((img) => img.height === 300)?.url ||
-      item.track.album.images[0]?.url ||
+      trackData.album.images?.find((img: { height: number }) => img.height === 300)?.url ||
+      trackData.album.images?.[0]?.url ||
       '';
 
     tracks.push({
-      id: item.track.id,
-      uri: item.track.uri,
-      name: item.track.name,
-      artist: item.track.artists[0]?.name || 'Unknown',
-      allArtists: item.track.artists.map((a) => a.name),
-      albumName: item.track.album.name,
+      id: trackData.id,
+      uri: trackData.uri,
+      name: trackData.name,
+      artist: trackData.artists?.[0]?.name || 'Unknown',
+      allArtists: trackData.artists?.map((a: { name: string }) => a.name) || [],
+      albumName: trackData.album.name,
       albumArt,
       releaseYear: parseInt(
-        item.track.album.release_date.substring(0, 4),
+        trackData.album.release_date?.substring(0, 4) || '0',
         10
       ),
     });
