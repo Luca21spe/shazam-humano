@@ -7,7 +7,7 @@ export interface PlaylistOption {
 export const PLAYLISTS: PlaylistOption[] = [
   {
     id: '3dcA7tiu9YLqccAj2Y4OwM',
-    name: 'Mi Playlist',
-    description: 'Playlist personalizada',
+    name: 'Playlist Shazam Humano',
+    description: '100 canciones para jugar',
   },
 ];
