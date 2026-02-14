@@ -53,20 +53,32 @@ export default function PlaylistSelector({
     setError(null);
 
     try {
-      const tokenData = sessionStorage.getItem('spotify_token_state');
       let name = `Playlist ${customPlaylists.length + 1}`;
 
-      if (tokenData) {
-        const { accessToken } = JSON.parse(tokenData);
-        if (accessToken) {
+      // Try getting the name using the accessToken prop passed down through context
+      // or from sessionStorage as fallback
+      const tokenData = sessionStorage.getItem('spotify_token_state');
+      const token = tokenData ? JSON.parse(tokenData).accessToken : null;
+
+      if (token) {
+        try {
           const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
+            headers: { Authorization: `Bearer ${token}` },
           });
           if (res.ok) {
             const data = await res.json();
-            name = data.name || name;
+            console.log('[Playlist] Fetched name:', data.name);
+            if (data.name) {
+              name = data.name;
+            }
+          } else {
+            console.log('[Playlist] Fetch failed:', res.status);
           }
+        } catch (fetchErr) {
+          console.log('[Playlist] Fetch error:', fetchErr);
         }
+      } else {
+        console.log('[Playlist] No token available for name lookup');
       }
 
       const newPlaylist: PlaylistOption = {
