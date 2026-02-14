@@ -11,6 +11,7 @@ import TeamForm from '@/components/setup/TeamForm';
 import PlaylistSelector from '@/components/setup/PlaylistSelector';
 import GameSettings from '@/components/setup/GameSettings';
 import type { Team, SpotifyTrack } from '@/types/game';
+import type { PlaylistOption } from '@/lib/playlists';
 
 export default function SetupPage() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function SetupPage() {
   ]);
 
   const [selectedPlaylists, setSelectedPlaylists] = useState<string[]>([]);
+  const [customPlaylists, setCustomPlaylists] = useState<PlaylistOption[]>([]);
   const [targetScore, setTargetScore] = useState(10);
   const [guessTimeSec, setGuessTimeSec] = useState(60);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +46,15 @@ export default function SetupPage() {
     setSelectedPlaylists((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
+  }, []);
+
+  const addCustomPlaylist = useCallback((playlist: PlaylistOption) => {
+    setCustomPlaylists((prev) => [...prev, playlist]);
+  }, []);
+
+  const removeCustomPlaylist = useCallback((id: string) => {
+    setCustomPlaylists((prev) => prev.filter((p) => p.id !== id));
+    setSelectedPlaylists((prev) => prev.filter((p) => p !== id));
   }, []);
 
   const updateTeam = useCallback((index: number, team: Team) => {
@@ -180,6 +191,9 @@ export default function SetupPage() {
           <PlaylistSelector
             selectedIds={selectedPlaylists}
             onToggle={togglePlaylist}
+            customPlaylists={customPlaylists}
+            onAddCustom={addCustomPlaylist}
+            onRemoveCustom={removeCustomPlaylist}
           />
         </section>
 
