@@ -59,7 +59,7 @@ export default function PlaylistSelector({
       if (tokenData) {
         const { accessToken } = JSON.parse(tokenData);
         if (accessToken) {
-          const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}?fields=name,description`, {
+          const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           if (res.ok) {
@@ -101,7 +101,7 @@ export default function PlaylistSelector({
           value={linkInput}
           onChange={(e) => { setLinkInput(e.target.value); setError(null); }}
           onKeyDown={handleKeyDown}
-          placeholder="Pega un link de Spotify playlist..."
+          placeholder="Pega el link de tu playlist de Spotify"
           className="flex-1 bg-surface-light rounded-xl px-4 py-3 text-text-primary outline-none border border-transparent focus:border-primary/50 transition-colors text-sm"
         />
         <button
