@@ -58,8 +58,9 @@ export default function Timeline({
           </div>
           <div className="text-text-secondary text-xs">{newTrack.artist}</div>
         </div>
-        <div className="text-primary font-bold text-sm ml-auto">
-          Ubicar en la timeline
+        <div className="text-primary text-sm ml-auto text-right">
+          <div className="font-bold">Ubicar en la timeline</div>
+          <div className="text-xs text-text-secondary font-normal">Toca un <span className="text-primary font-bold">+</span> para colocarla</div>
         </div>
       </div>
 
@@ -136,13 +137,13 @@ function PlacementGap({
   return (
     <button
       onClick={() => onPlace(position)}
-      className="timeline-gap flex flex-col items-center justify-center min-w-[60px] h-20 mx-1 rounded-lg border-2 border-dashed border-text-secondary/20 hover:border-primary hover:bg-primary/10 transition-all group"
+      className="timeline-gap flex flex-col items-center justify-center min-w-[72px] h-24 mx-1 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 hover:border-primary hover:bg-primary/15 active:scale-95 transition-all group cursor-pointer"
       title={label}
     >
-      <span className="text-text-secondary group-hover:text-primary text-xl transition-colors">
-        +
+      <span className="w-8 h-8 rounded-full bg-primary/20 group-hover:bg-primary/30 flex items-center justify-center transition-colors">
+        <span className="text-primary font-bold text-lg">+</span>
       </span>
-      <span className="text-[10px] text-text-secondary group-hover:text-primary/70 transition-colors px-1 text-center leading-tight">
+      <span className="text-[10px] text-text-secondary group-hover:text-primary/80 transition-colors px-1 text-center leading-tight mt-1">
         {label}
       </span>
     </button>
